@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  nginx:
+    image: nginx:last
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - nodejs
+
+  nodejs:
+    image: labdocker/alpineweb:web1
+    replicated: 2
+    port:
+	- 3000:3000
