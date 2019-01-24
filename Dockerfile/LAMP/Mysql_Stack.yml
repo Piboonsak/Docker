@@ -1,0 +1,14 @@
+version: "3"
+services:
+  mysql:
+    # replace username/repo:tag with your name and image details
+    image: mysql:5.7.23
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "/etc/mysql:/etc/mysql"
+    ports:
+      - "13306:3306"
