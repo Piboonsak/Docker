@@ -1,0 +1,93 @@
+docker run -dt --name test_mysql \
+-v /var/lib/docker/mysql/_data:/var/lib/mysql \
+-e MYSQL_ROOT_PASSWORD=example \
+-p 43306:3306 mysql:5.7.23
+
+
+ubuntu1604:STDv2.12
+
+ubuntu:16.04_STD_LAMP
+
+docker run -dt --name hd-c1nn \
+-p 80:80 \
+-p 3306:3306 \
+ubuntu:16.04_STD_LAMP
+
+--------------------------------------------------------------------------------------------
+
+FROM centos:7
+ENV container docker
+RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == \
+systemd-tmpfiles-setup.service ] || rm -f $i; done); \
+rm -f /lib/systemd/system/multi-user.target.wants/*;\
+rm -f /etc/systemd/system/*.wants/*;\
+rm -f /lib/systemd/system/local-fs.target.wants/*; \
+rm -f /lib/systemd/system/sockets.target.wants/*udev*; \
+rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
+rm -f /lib/systemd/system/basic.target.wants/*;\
+rm -f /lib/systemd/system/anaconda.target.wants/*;
+VOLUME [ "/sys/fs/cgroup" ]
+CMD ["/usr/sbin/init"]
+
+# -----------------------------------------------------------------------------
+# Base Install + Import the RPM GPG keys for Repositories
+# -----------------------------------------------------------------------------
+# docker run -ti -v /sys/fs/cgroup:/sys/fs/cgroup:ro -p 80:80 local/c7-systemd-httpd
+
+# docker run -d -t -p 30022:22 -p 30021:21 --hostname dc-os --name dc-os --privileged -ti -e contriner=docker -v /sys/fs/cgroup:/sys/fs/cgroup centos/systemd
+
+
+# docker run -d -t -p 30022:22 -p 30021:21 --hostname hd-c1nn --name hd-c1nn --privileged -ti -e contriner=docker -v /sys/fs/cgroup:/sys/fs/cgroup centos/systemd
+--------------------------------------------------------------------------------------------
+
+# For general host
+docker network create -d macvlan --subnet=$SUBNET --gateway=$GATEWAY_IP -o parent=eth0 public
+
+
+# For VM
+docker network create -d macvlan --subnet=$SUBNET --gateway=$GATEWAY_IP -o parent=ens160 public
+--------------------------------------------------------------------------------------------
+
+
+root@docker100:~# docker network create -d overlay cloudera
+
+
+docker service create -d -t \
+-p 30022:22 -p 30021:21 -p 30080:80 -p 33306:3306 \
+--network cloudera --hostname hd-c2nn \
+--name hd-c2nn \
+-e contriner=docker \
+--mount type=bind,source=/sys/fs/cgroup,destination=/sys/fs/cgroup \
+centos/systemd
+
+
+--mount type=bind,source=/path/on/host,destination=/path/in/container \
+
+--------------------------------------------------------------------------------------------
+
+docker service create -d -t \
+-p 30022:22 -p 30021:21 -p 30080:80 -p 33306:3306 \
+--network cloudera --hostname hd-c2nn \
+--name hd-c2nn \
+-e contriner=docker \
+--mount type=bind,source=/sys/fs/cgroup,destination=/sys/fs/cgroup \
+hd-c1nn:0.1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

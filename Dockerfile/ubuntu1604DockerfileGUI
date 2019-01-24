@@ -1,0 +1,24 @@
+FROM ubuntu:16.04
+MAINTAINER Piboonsak Pimsarn (PiboonsakTraceon@gmail.com) 
+LABEL Description="ubuntu STD v2.1"
+ENV ubuntu=16.04
+RUN apt-get update && apt-get install -y \
+	nano \
+	vim \
+	wget \
+	curl \
+	htop \
+	man \
+	net-tools \
+        iptables iptables-persistent
+RUN apt-get install -y iputils-ping
+RUN apt-get install -y openssh-server
+RUN service ssh enable
+RUN service ssh restart
+RUN apt-get install -y xubuntu-desktop \
+        xrdp
+RUN echo xfce4-session >~/.xsession
+RUN echo "connect by client best resolution."
+RUN mkdir -p /myapp
+WORKDIR /myapp
+EXPOSE all

@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  mysql-master:
+    image: 'bitnami/mysql:latest'
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - '3306'
+    volumes:
+      - 'mysql_master_data:/bitnami/mysql'
+    environment:
+      - MYSQL_REPLICATION_MODE=master
+      - MYSQL_REPLICATION_USER=root
+      - MYSQL_REPLICATION_PASSWORD=password
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=my_password
+      - MYSQL_DATABASE=mysqlclusterdb
+    volumes:
+      - '/var/lib/docker/volumes/mysql_cluster_data/_data:/bitnami/mysql'
+  mysql-slave:
+    image: 'bitnami/mysql:latest'
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - '3306'
+    depends_on:
+      - mysql-master
+    environment:
+      - MYSQL_REPLICATION_MODE=slave
+      - MYSQL_REPLICATION_USER=root
+      - MYSQL_REPLICATION_PASSWORD=password
+      - MYSQL_MASTER_HOST=mysql-master
+      - MYSQL_MASTER_PORT_NUMBER=3306
+      - MYSQL_MASTER_ROOT_PASSWORD=password
